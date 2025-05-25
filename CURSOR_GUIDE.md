@@ -45,13 +45,25 @@ Ask Cursor to generate the main script by describing what you want:
 ```
 Create a Python script that uses the Gmail API to:
 1. Authenticate with a Google account
-2. Fetch email addresses from emails in a specific Gmail label
+2. Fetch email addresses from emails in a specific Gmail label (SCE)
 3. Send a mass email to all these addresses as BCC
 4. Use an HTML template for the email content
 5. Optionally delete the original emails after sending
 ```
 
 Cursor will generate a script similar to `email_sender.py` in this project.
+
+The script offers a streamlined workflow:
+
+1. **Preview Mode**: Choose whether to just view the email addresses or proceed with actions
+2. **Action Selection**: Choose from a menu of options:
+   - Send emails and delete originals
+   - Send emails without deleting originals
+   - Delete originals without sending emails
+3. **Confirmation**: Confirm before any sending or deletion occurs
+4. **Execution**: Perform the selected action with appropriate feedback
+
+The script handles error conditions gracefully, with fallbacks for operations that might fail due to permission issues.
 
 ## Step 4: Creating the Email Template
 
@@ -63,10 +75,14 @@ Create an HTML email template with:
 2. Some paragraphs of text
 3. A button that links to a URL
 4. A footer with attribution
-Make sure it's properly formatted for HTML emails
+Make sure it's properly formatted for HTML emails with right-to-left support for Hebrew text
 ```
 
-Modify the template to suit your needs.
+Modify the template to suit your needs. Our template includes:
+
+- Right-to-left text alignment for Hebrew
+- A prominent button linking to a Google Drive
+- Attribution in the footer with links to this project
 
 ## Step 5: Testing Your Script
 
@@ -80,17 +96,34 @@ Modify the template to suit your needs.
    python email_sender.py
    ```
 
-3. Follow the prompts to authenticate and send your email
+3. Follow the prompts to:
+   - Choose preview mode or action mode
+   - Review the email addresses found
+   - Select what action to take (send, delete, or both)
+   - Confirm your choices
+
+The script uses proper Gmail API scopes to ensure all operations are authorized:
+```python
+SCOPES = [
+    'https://mail.google.com/',  # Full access to Gmail account
+    'https://www.googleapis.com/auth/gmail.modify',
+    'https://www.googleapis.com/auth/gmail.labels',
+    'https://www.googleapis.com/auth/gmail.compose'
+]
+```
 
 ## Step 6: Creating a Demo Script
 
-If you want to test your email template without sending to multiple recipients:
+If you want to test your email template without affecting multiple recipients or labeled emails:
 
 ```
 Create a script that sends a test email to myself using the template
 ```
 
-Cursor will generate a script like `send_demo_email.py` in this project.
+Cursor will generate a script like `send_demo_email.py` in this project. This is useful for:
+- Previewing how your email will look
+- Testing the template before sending to multiple recipients
+- Verifying authentication works correctly
 
 ## Tips for Working with Cursor
 

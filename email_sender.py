@@ -9,7 +9,12 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ['https://www.googleapis.com/auth/gmail.modify']
+SCOPES = [
+    'https://mail.google.com/',  # Full access to Gmail account (all operations)
+    'https://www.googleapis.com/auth/gmail.modify',
+    'https://www.googleapis.com/auth/gmail.labels',
+    'https://www.googleapis.com/auth/gmail.compose'
+]
 
 def get_gmail_service():
     """Get an authorized Gmail API service instance."""
@@ -104,15 +109,34 @@ def get_emails_from_label(service, label_id):
 def delete_messages(service, message_ids):
     """Delete messages by ID."""
     if not message_ids:
+        print("No messages to delete.")
         return
     
-    # Use batch delete to remove messages
-    service.users().messages().batchDelete(
-        userId='me', 
-        body={'ids': message_ids}
-    ).execute()
-    
-    print(f"Successfully deleted {len(message_ids)} messages.")
+    try:
+        # Use batch delete to remove messages
+        service.users().messages().batchDelete(
+            userId='me', 
+            body={'ids': message_ids}
+        ).execute()
+        
+        print(f"Successfully deleted {len(message_ids)} messages.")
+    except Exception as e:
+        print(f"Error while deleting messages: {e}")
+        print("\nTrying alternative method - deleting one by one...")
+        
+        # Try deleting messages one by one if batch delete fails
+        deleted_count = 0
+        for msg_id in message_ids:
+            try:
+                service.users().messages().trash(userId='me', id=msg_id).execute()
+                deleted_count += 1
+                # Print progress every 5 messages
+                if deleted_count % 5 == 0:
+                    print(f"Deleted {deleted_count}/{len(message_ids)} messages...")
+            except Exception as msg_error:
+                print(f"Failed to delete message {msg_id}: {msg_error}")
+        
+        print(f"Deletion complete. Successfully deleted {deleted_count}/{len(message_ids)} messages.")
 
 def create_message_with_template(sender, bcc_list, subject, template_file):
     """Create an email message with HTML template."""
@@ -147,6 +171,7 @@ def send_message(service, message):
         return None
 
 def main():
+    """Main function to run the email sender."""
     # Get Gmail API service
     service = get_gmail_service()
     
@@ -157,6 +182,9 @@ def main():
     if not label_id:
         print(f"Label '{label_name}' not found. Exiting.")
         return
+    
+    # First, determine if this is a preview run
+    preview_mode = input("Run in preview mode? (y/n): ").lower() == 'y'
     
     # Get email addresses from label
     print(f"Fetching email addresses from '{label_name}' label...")
@@ -173,45 +201,77 @@ def main():
         print("No email addresses found. Exiting.")
         return
     
-    # Determine if this is a dry run
-    dry_run = input("Preview only? (y = preview addresses, n = proceed to send emails): ").lower() == 'y'
-    
-    if dry_run:
+    # Exit if in preview mode
+    if preview_mode:
         print("\nPREVIEW MODE - No emails will be sent or deleted.")
         return
     
-    # Set sender as Aryeh Katz with default email
+    # Set up email parameters
     sender = "Aryeh Katz <dxdarie@gmail.com>"
     
     # Default subject line
     subject = "SCE 2015 Drive - לינק לדרייב 2015"
     
-    template_file = input("Enter path to HTML template file (default: email_template.html): ") or "email_template.html"
+    # Use the default template file
+    template_file = "email_template.html"
     
-    # Confirm before sending
-    print(f"\nReady to send email to {len(email_addresses)} recipients (BCC).")
-    confirm = input("Send the email? (y/n): ")
+    # Ask what action to take
+    print("\nWhat would you like to do?")
+    print("1. Send emails and delete originals")
+    print("2. Send emails without deleting originals")
+    print("3. Delete originals without sending emails")
     
-    if confirm.lower() != 'y':
-        print("Operation cancelled.")
+    action = input("Enter your choice (1-3): ")
+    
+    # Handle different actions
+    if action == "1":
+        # Send and delete
+        send_email = True
+        delete_after = True
+    elif action == "2":
+        # Send only
+        send_email = True
+        delete_after = False
+    elif action == "3":
+        # Delete only
+        send_email = False
+        delete_after = True
+    else:
+        print("Invalid choice. Exiting.")
         return
     
-    # Create and send the message
-    message = create_message_with_template(sender, email_addresses, subject, template_file)
-    sent_message = send_message(service, message)
-    
-    if sent_message:
-        # Verify email was sent successfully
-        print("Email sent successfully!")
+    # Send email if requested
+    if send_email:
+        # Confirm before sending
+        print(f"\nReady to send email to {len(email_addresses)} recipients (BCC).")
+        confirm = input("Send the email? (y/n): ")
         
-        # Ask if user wants to delete original emails
-        delete_confirm = input("Delete all emails under the label? (y/n): ")
+        if confirm.lower() != 'y':
+            print("Sending cancelled.")
+            return
+        
+        # Create and send the message
+        message = create_message_with_template(sender, email_addresses, subject, template_file)
+        sent_message = send_message(service, message)
+        
+        if sent_message:
+            # Verify email was sent successfully
+            print("Email sent successfully!")
+        else:
+            print("Failed to send email.")
+            # Don't delete if sending failed
+            delete_after = False
+    
+    # Delete emails if requested
+    if delete_after:
+        # Ask for confirmation before deleting
+        delete_confirm = input(f"Delete all {len(message_ids)} emails under the label? (y/n): ")
         if delete_confirm.lower() == 'y':
             delete_messages(service, message_ids)
         else:
             print("Emails were not deleted.")
-    else:
-        print("Failed to send email. Original emails were not deleted.")
+    
+    print("Operation complete.")
 
 if __name__ == '__main__':
     main() 
