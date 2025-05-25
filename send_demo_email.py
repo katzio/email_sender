@@ -16,7 +16,7 @@ def send_demo_email():
     recipient = "dxdarie@gmail.com"
     
     # Email subject
-    subject = "Test Email - Google Drive SCE 2015 Link Update"
+    subject = "SCE 2015 Drive - לינק לדרייב 2015"
     
     # Email template file
     template_file = "email_template.html"

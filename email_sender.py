@@ -182,7 +182,10 @@ def main():
     
     # Set sender as Aryeh Katz with default email
     sender = "Aryeh Katz <dxdarie@gmail.com>"
-    subject = input("Enter email subject: ")
+    
+    # Default subject line
+    subject = "SCE 2015 Drive - לינק לדרייב 2015"
+    
     template_file = input("Enter path to HTML template file (default: email_template.html): ") or "email_template.html"
     
     # Confirm before sending
