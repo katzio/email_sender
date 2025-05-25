@@ -56,3 +56,7 @@ A Python script for sending mass emails using the Gmail API, with all recipients
 - The token.json file is created after authentication and stores your credentials securely.
 - If you modify the SCOPES in the script, delete token.json to re-authenticate.
 - The script removes duplicate email addresses before sending. 
+
+## Project Creation
+
+This project was fully generated using [Cursor](https://cursor.sh), an AI-powered code editor built on VSCode. For beginners in computer engineering who want to recreate this project or build something similar, we've included a detailed guide in the [CURSOR_GUIDE.md](CURSOR_GUIDE.md) file. 
