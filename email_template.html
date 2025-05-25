@@ -1,17 +1,23 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="he">
+<html dir="rtl" lang="he" style="direction: rtl;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>עדכון קישור ל-Google Drive של SCE 2015</title>
     <style>
+        * {
+            text-align: right !important;
+            direction: rtl !important;
+        }
+        
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
             padding: 20px;
             color: #333;
-            direction: rtl;
+            direction: rtl !important;
+            text-align: right !important;
         }
         .container {
             max-width: 600px;
@@ -20,14 +26,19 @@
             border-radius: 5px;
             padding: 20px;
             background-color: #f9f9f9;
+            text-align: right !important;
+            direction: rtl !important;
         }
         h1 {
-            color: #0066cc;
+            color: #ffffff;
             font-size: 24px;
             margin-bottom: 20px;
+            text-align: right !important;
         }
         p {
             margin-bottom: 15px;
+            text-align: right !important;
+            direction: rtl !important;
         }
         .button {
             display: inline-block;
@@ -40,37 +51,46 @@
             margin-top: 10px;
             margin-bottom: 10px;
         }
+        
+        /* Ensure button text is white */
+        a.button {
+            color: white !important;
+            text-decoration: none;
+        }
+        
         .footer {
             margin-top: 30px;
             font-size: 14px;
             color: #666;
             border-top: 1px solid #ddd;
             padding-top: 15px;
+            text-align: right !important;
+            direction: rtl !important;
+        }
+        
+        /* Exceptional case for centered button */
+        .center-button {
+            text-align: center !important;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>הדרייב הישן עבר לכתובת חדשה!</h1>
+<body style="direction: rtl; text-align: right;">
+    <div class="container" style="direction: rtl; text-align: right;">
+        <h1 style="text-align: right;">הדרייב הישן עבר לכתובת חדשה!</h1>
         
-        <p>היי 👋</p>
+        <p style="text-align: right;">היי 👋</p>
         
-        <p>ראיתי שאתם עדיין משתמשים בלינק הישן לדרייב של סמי מ 2015. אז רציתי לעדכן שיש לינק חדש!</p>
+        <p style="text-align: right;">ראיתי שאתם עדיין משתמשים בלינק הישן לדרייב של סמי מ 2015. אז רציתי לעדכן שיש לינק חדש!</p>
         
-        <p>הנה הלינק העדכני:</p>
-        
-        <p style="text-align: center;">
+        <p class="center-button">
             <a href="https://drive.google.com/drive/folders/0B-lpIKJeKLS4YTlMOThlNlpKUVU?resourcekey=0-92IHg5NgLy2SNG5g3anhzg&usp=drive_link" class="button">לחצו כאן לדרייב המעודכן של SCE 2015</a>
         </p>
         
-        <p>שיהיה בהצלחה בלימודים!</p>
+        <p style="text-align: right;">שיהיה בהצלחה בלימודים!</p>
         
-        <p>ארי</p>
-        
-        <div class="footer">
-            <p style="font-size: 12px; color: #999; margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px;">
-                נשלח באמצעות <a href="https://github.com/katzio/email_sender" style="color: #666; text-decoration: underline;">katzio/email_sender</a><br>
-                גרסת קוד מאומתת: d152f8d30f12c11f6a7c9dd718df71755e172d0947faec5d0d28e4a54690785f
+        <div class="footer" style="text-align: right;">
+            <p style="font-size: 12px; color: #999; margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px; text-align: right;">
+                נשלח באמצעות <a href="https://github.com/katzio/email_sender" style="color: #666; text-decoration: underline;">katzio/email_sender</a>
             </p>
         </div>
     </div>
